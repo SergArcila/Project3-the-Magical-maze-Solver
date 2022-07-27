@@ -554,6 +554,7 @@ def breadth_first_search() -> []:
 
 
 # custom written Dijkstra's algorithm for shortest path, Group 1 COP3530
+# uses some lines of code from Stepik Module 8.2 Dijkstra's Shortest Paths From Source Vertex to all Vertices
 def abbreviatedDijkstra() -> []:
     # Dijkstra variables
     global sumPath
@@ -809,3 +810,4 @@ while game_on:
 
 # Attributions:
 # Free sounds from zapsplat.com
+# 8.2 Dijkstra's Shortest Paths From Source Vertex to all Vertices
