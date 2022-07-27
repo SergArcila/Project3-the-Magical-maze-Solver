@@ -1,9 +1,9 @@
-#COP 3530 Summer 2022
-#Project 3
-#Group 1
-#Members: Aaron Hamburger, Sergio Arcila, Zachary Schirm
-#Present...
-#The Magical Maze Solver!
+#  COP 3530 Summer 2022
+#  Project 3
+#  Group 1
+#  Members: Aaron Hamburger, Sergio Arcila, Zachary Schirm
+#  Present...
+#  The Magical Maze Solver!
 
 
 import pygame
@@ -53,7 +53,7 @@ global DFS_nodes_visited
 high_nodes_menu_choice = 1
 global maze_solution_BFS
 global BFS_visited_nodes
-global sum_Path
+global sumPath
 global winning_algo
 
 # Define colors
@@ -97,12 +97,15 @@ def build_maze(node_count):
         mazeGraph.add_node(i)
 
     # draw background color of maze
-    pygame.draw.rect(screen, BLUE, pygame.Rect(GRAPH_X_OFFSET + 20, GRAPH_Y_OFFSET + 20, GRAPH_SCALE_FACTOR*20*rows, GRAPH_SCALE_FACTOR*20*rows))
+    pygame.draw.rect(screen, BLUE, pygame.Rect(GRAPH_X_OFFSET + 20, GRAPH_Y_OFFSET + 20,
+                                               GRAPH_SCALE_FACTOR*20*rows, GRAPH_SCALE_FACTOR*20*rows))
 
     # draw all individual cells (Rects), walls will overlap but will be drawn over during maze creation
     for j in range(0, rows):
         for k in range(0, rows):
-            pygame.draw.rect(screen, WHITE, pygame.Rect((20 + GRAPH_X_OFFSET + j * 20 * GRAPH_SCALE_FACTOR), (20 + GRAPH_Y_OFFSET + k * 20 * GRAPH_SCALE_FACTOR), 20 * GRAPH_SCALE_FACTOR, 20 * GRAPH_SCALE_FACTOR), width=1)
+            pygame.draw.rect(screen, WHITE, pygame.Rect((20 + GRAPH_X_OFFSET + j * 20 * GRAPH_SCALE_FACTOR),
+                                                        (20 + GRAPH_Y_OFFSET + k * 20 * GRAPH_SCALE_FACTOR),
+                                                        20 * GRAPH_SCALE_FACTOR, 20 * GRAPH_SCALE_FACTOR), width=1)
 
     # refresh display with above
     pygame.display.update()
@@ -120,7 +123,9 @@ def move_up(node_number):
     else:
         x_pos = int(node_number % rows)
         y_pos = int(node_number / rows)
-    pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos*20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET, y_pos*20*GRAPH_SCALE_FACTOR + 1 + GRAPH_Y_OFFSET, 18*GRAPH_SCALE_FACTOR, 38*GRAPH_SCALE_FACTOR))
+    pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos*20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
+                                               y_pos*20*GRAPH_SCALE_FACTOR + 1 + GRAPH_Y_OFFSET,
+                                               18*GRAPH_SCALE_FACTOR, 38*GRAPH_SCALE_FACTOR))
     pygame.display.update()
 
 
@@ -132,7 +137,9 @@ def move_right(node_number):
     else:
         x_pos = int(node_number % rows)
         y_pos = int(node_number / rows)
-    pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos*20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET, y_pos*20*GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET, 38*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
+    pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos*20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
+                                               y_pos*20*GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
+                                               38*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
     pygame.display.update()
 
 
@@ -144,7 +151,9 @@ def move_left(node_number):
     else:
         x_pos = int(node_number % rows)
         y_pos = int(node_number / rows)
-    pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos*20*GRAPH_SCALE_FACTOR - 19 + GRAPH_X_OFFSET, y_pos*20*GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET*GRAPH_SCALE_FACTOR, 38*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
+    pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos*20*GRAPH_SCALE_FACTOR - 19 + GRAPH_X_OFFSET,
+                                               y_pos*20*GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET*GRAPH_SCALE_FACTOR,
+                                               38*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
     pygame.display.update()
 
 
@@ -156,7 +165,9 @@ def move_down(node_number):
     else:
         x_pos = int(node_number % rows)
         y_pos = int(node_number / rows)
-    pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET, y_pos * 20 * GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET, 18*GRAPH_SCALE_FACTOR, 38*GRAPH_SCALE_FACTOR))
+    pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
+                                               y_pos * 20 * GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
+                                               18*GRAPH_SCALE_FACTOR, 38*GRAPH_SCALE_FACTOR))
     pygame.display.update()
 
 
@@ -168,7 +179,9 @@ def color_one_cell(node_number):
     else:
         x_pos = int(node_number % rows)
         y_pos = int(node_number / rows)
-    pygame.draw.rect(screen, YELLOW, pygame.Rect(x_pos * 20 * GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET, y_pos * 20 * GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET, 18*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
+    pygame.draw.rect(screen, YELLOW, pygame.Rect(x_pos * 20 * GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
+                                                 y_pos * 20 * GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
+                                                 18*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
     pygame.display.update()
 
 
@@ -180,7 +193,9 @@ def color_beginning(node_number):
     else:
         x_pos = int(node_number % rows)
         y_pos = int(node_number / rows)
-    pygame.draw.rect(screen, GREEN, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET, y_pos * 20 *GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET, 18*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
+    pygame.draw.rect(screen, GREEN, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
+                                                y_pos * 20 *GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
+                                                18*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
     pygame.display.update()
 
 
@@ -192,7 +207,9 @@ def color_end(node_number):
     else:
         x_pos = int(node_number % rows)
         y_pos = int(node_number / rows)
-    pygame.draw.rect(screen, RED, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET, y_pos * 20*GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET, 18*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
+    pygame.draw.rect(screen, RED, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
+                                              y_pos * 20*GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
+                                              18*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
     pygame.display.update()
 
 
@@ -206,7 +223,9 @@ def uncolor_one_cell(node_number):
     else:
         x_pos = int(node_number % rows)
         y_pos = int(node_number / rows)
-    pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET, y_pos * 20*GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET, 18*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
+    pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
+                                               y_pos * 20*GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
+                                               18*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
     pygame.display.update()
 
 
@@ -218,7 +237,9 @@ def show_solution_cell(node_number):
     else:
         x_pos = int(node_number % rows)
         y_pos = int(node_number / rows)
-    pygame.draw.rect(screen, WHITE, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 8 + GRAPH_X_OFFSET, y_pos * 20*GRAPH_SCALE_FACTOR + 28 + GRAPH_Y_OFFSET, 3*GRAPH_SCALE_FACTOR, 3*GRAPH_SCALE_FACTOR))
+    pygame.draw.rect(screen, WHITE, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 8 + GRAPH_X_OFFSET,
+                                                y_pos * 20*GRAPH_SCALE_FACTOR + 28 + GRAPH_Y_OFFSET,
+                                                3*GRAPH_SCALE_FACTOR, 3*GRAPH_SCALE_FACTOR))
     pygame.display.update()
 
 
@@ -400,7 +421,7 @@ def solve_the_maze():
     print(maze_solution_dijkstra)
     print(maze_solution_DFS)
     print(maze_solution_BFS)
-    display_maze_solution(maze_solution_dijkstra)
+    display_maze_solution(maze_solution_BFS)
 
 
 # solves the maze using Dijkstra's, BFS, DFS, but outputs no visuals as maze of 100k cannot fit on screen
@@ -491,7 +512,7 @@ def depth_first_search() -> []:
     return maze_solution
 
 
-#custom breadth first search algorithm
+#  custom breadth first search algorithm
 def breadth_first_search() -> []:
     previous_node_dictionary = {}
     node_queue = [1]
@@ -532,9 +553,10 @@ def breadth_first_search() -> []:
     return maze_solution
 
 
-# custom written Dijkstra's alorithm for shortest path, Group 1 COP3530
-def project3Dijkstra():
+# custom written Dijkstra's algorithm for shortest path, Group 1 COP3530
+def project3Dijkstra() -> []:
     # Dijkstra variables
+    global sumPath
     priorityQueue = [] # heap based on distance array variable
     sumPath = 1 # count includes starting node 1, count all node visits
     shortestPath = arr.array('i') # unique node shortest path
@@ -564,9 +586,8 @@ def project3Dijkstra():
                     ancestor.add((v, origin))
         origin = priorityQueue[0][1] # move origin to next item in heap
         heapq.heappop(priorityQueue) # pop item off heap
-    
-    # printing shortest path as nodes
-    print('The solution to the maze from Project 3 Custom Dijkstra\'s as nodes:')
+
+    # creating shortest path vector (will be reverse order)
     origin = global_node_count # start
     while origin != 1:
         # Find an element in list of tuples.
@@ -575,14 +596,6 @@ def project3Dijkstra():
                 origin = item[1]
                 shortestPath.append(item[0])
     shortestPath.append(origin)
-    # print array shortestPath
-    print('[', shortestPath[len(shortestPath) - 1], end = ", ")
-    for i in range(len(shortestPath)-2, 0, -1):     
-        print(shortestPath[i], end = ", ")
-    print(shortestPath[0], ']')
-    print('Number of nodes in Dijkstra\'s shortest path solution: ', len(shortestPath))
-    percentage = (float(sumPath)/global_node_count) * 100
-    print('Percentage of nodes visited by Dijkstra\'s shortest path algorithm:', f'{percentage : .2f}', '%')
 
     ascending_order_path = []
     x = len(shortestPath)
@@ -594,9 +607,10 @@ def project3Dijkstra():
 
 # set the mood with some MUSIC! also loads sound effects
 solve_click = pygame.mixer.Sound("536108__eminyildirim__ui-click.wav")
-end_maze_sound = pygame.mixer.Sound("zapsplat_multimedia_game_sound_childrens_soft_twinkling_finish_end_tone_005_60683.mp3")
+end_maze_sound = pygame.mixer.Sound("zapsplat_multimedia_game_sound_childrens"
+                                    "_soft_twinkling_finish_end_tone_005_60683.mp3")
 pygame.mixer.music.load('music_zapsplat_aiming_high.mp3')
-pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.set_volume(0.8)
 pygame.mixer.music.play(-1)
 
 
@@ -724,10 +738,12 @@ btn = menu.add.selector('Large Maze Choices: ', [('Graph 1', 1), ('Graph 2', 2),
 btn.readonly = True
 btn.is_selectable = False
 menu.add.label("----Speed Adjustment (Visuals)----", label_id="label_widget", )
-slider = menu.add.range_slider("Maze Creation Delay:", rangeslider_id="creation_speed_slider", default=.001, range_values=(0, 0.1), increment=10, onchange=set_creation_speed)
+slider = menu.add.range_slider("Maze Creation Delay:", rangeslider_id="creation_speed_slider", default=.001,
+                               range_values=(0, 0.1), increment=10, onchange=set_creation_speed)
 slider.readonly = False
 slider.is_selectable = True
-slider2 = menu.add.range_slider("Maze Solution Delay:", rangeslider_id="solve_speed_slider", default=.1, range_values=(0, 0.1), increment=10, onchange=set_solve_speed)
+slider2 = menu.add.range_slider("Maze Solution Delay:", rangeslider_id="solve_speed_slider",
+                                default=.1, range_values=(0, 0.1), increment=10, onchange=set_solve_speed)
 slider2.readonly = False
 slider2.is_selectable = True
 menu.add.button('Start Maze', run_the_maze)
@@ -750,7 +766,7 @@ while game_on:
     if solved:
 
         dijkstra_text = font.render('Dijkstra: ', True, (0, 0, 0))
-        dijkstra_nodes = font.render("Nodes Visited: " + str(sum_Path), True, (0, 0, 0))
+        dijkstra_nodes = font.render("Nodes Visited: " + str(sumPath), True, (0, 0, 0))
         dijkstra_solution_nodes = font.render("Nodes in Solution: " + str(len(maze_solution_dijkstra)), True, (0, 0, 0))
         dijkstra_solve = font.render("Time to solve (ms): " + str(execution_time_dijkstra), True, (0, 0, 0))
 
@@ -790,6 +806,4 @@ while game_on:
 
 
 # Attributions:
-# Maze video Vecteezy.com
 # Free sounds from zapsplat.com
-# Hourglass sprite freepik.com
