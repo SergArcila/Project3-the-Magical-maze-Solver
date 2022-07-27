@@ -757,6 +757,8 @@ while game_on:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_on = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            continue
 
     if menu.is_enabled():
         menu.update(events)
