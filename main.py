@@ -532,32 +532,41 @@ def breadth_first_search() -> []:
     return maze_solution
 
 
-# custom written Dijkstra's algorithm for shortest path, Group 1 COP3530
-# G.adj[n].items()
-def project3Dijkstra() -> []:
+# custom written Dijkstra's alorithm for shortest path, Group 1 COP3530
+def project3Dijkstra():
     # Dijkstra variables
-    global sum_Path
-    priorityQueue = [] # heap based on sumPath variable
-    sum_Path = 1 # count includes starting node 1, count all node visits
+    priorityQueue = [] # heap based on distance array variable
+    sumPath = 1 # count includes starting node 1, count all node visits
     shortestPath = arr.array('i') # unique node shortest path
     visitedNodes = set() # set of visited nodes with unique nodes to prevent retracing steps
-    heapq.heappush(priorityQueue, (sum_Path, 1)) # add starting node: always start at node 1
+    distance = arr.array('i', [0,0]) # map that stores all the distances from the source node
+    heapq.heappush(priorityQueue, (0, 1)) # add starting node: always start at node 1 and distance 0
     visitedNodes.add(1) # add starting node: always start at node 1
     ancestor = set() # store node and ancestor
     origin = 1 # origin set to 1
 
+    i = 2
+    while i != (global_node_count + 1):
+        distance.append(global_node_count)  # load each distance in initial map with INT_MAX
+        i += 1
+
     while origin != global_node_count:
         for nbr in mazeGraph.adj[origin].items(): # step through neighbors of origin
             if nbr[0] not in visitedNodes: # except for nodes already visited
-                sum_Path += 1 # increment sumPath
-                heapq.heappush(priorityQueue, (sum_Path, nbr[0]))
-                visitedNodes.add(nbr[0])
-                ancestor.add((nbr[0], origin))
+                u = origin # get current node
+                v = nbr[0] # neighbor
+                w = 1 # u->v the weight of the edge
+                if distance[v] > (distance[u] + w):
+                    distance[v] = distance[u] + w
+                    heapq.heappush(priorityQueue, (distance[v], v))
+                    sumPath += 1 # increment sumPath
+                    visitedNodes.add(v)
+                    ancestor.add((v, origin))
         origin = priorityQueue[0][1] # move origin to next item in heap
         heapq.heappop(priorityQueue) # pop item off heap
-
-# printing shortest path as nodes
-    print('The solution to the maze from Project 3 Custom Dijkstras as nodes:')
+    
+    # printing shortest path as nodes
+    print('The solution to the maze from Project 3 Custom Dijkstra\'s as nodes:')
     origin = global_node_count # start
     while origin != 1:
         # Find an element in list of tuples.
@@ -566,15 +575,14 @@ def project3Dijkstra() -> []:
                 origin = item[1]
                 shortestPath.append(item[0])
     shortestPath.append(origin)
-
     # print array shortestPath
     print('[', shortestPath[len(shortestPath) - 1], end = ", ")
-    for i in range(len(shortestPath)-2, 0, -1):
+    for i in range(len(shortestPath)-2, 0, -1):     
         print(shortestPath[i], end = ", ")
-    print(shortestPath[0], ' ]')
-    print('Number of nodes in Dijkstras shortest path solution: ', len(shortestPath))
-    percentage = (float(sum_Path)/global_node_count) * 100
-    print('Percentage of nodes visited by Dijkstras shortest path algorithm:', f'{percentage : .2f}', '%')
+    print(shortestPath[0], ']')
+    print('Number of nodes in Dijkstra\'s shortest path solution: ', len(shortestPath))
+    percentage = (float(sumPath)/global_node_count) * 100
+    print('Percentage of nodes visited by Dijkstra\'s shortest path algorithm:', f'{percentage : .2f}', '%')
 
     ascending_order_path = []
     x = len(shortestPath)
