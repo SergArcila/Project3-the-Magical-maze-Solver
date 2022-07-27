@@ -391,7 +391,7 @@ def solve_the_maze():
     maze_solution_BFS = []
 
     start_time = time.time_ns()
-    maze_solution_dijkstra = project3Dijkstra()
+    maze_solution_dijkstra = abbreviatedDijkstra()
     end_time = time.time_ns()
     execution_time_dijkstra = (end_time - start_time)/1000000
 
@@ -440,7 +440,7 @@ def solve_the_maze_too_big():
     maze_solution_BFS = []
 
     start_time = time.time_ns()
-    maze_solution_dijkstra = project3Dijkstra()
+    maze_solution_dijkstra = abbreviatedDijkstra()
     maze_solution_dijkstra
     end_time = time.time_ns()
     execution_time_dijkstra = (end_time - start_time)/1000000
@@ -554,7 +554,7 @@ def breadth_first_search() -> []:
 
 
 # custom written Dijkstra's algorithm for shortest path, Group 1 COP3530
-def project3Dijkstra() -> []:
+def abbreviatedDijkstra() -> []:
     # Dijkstra variables
     global sumPath
     priorityQueue = [] # heap based on distance array variable
