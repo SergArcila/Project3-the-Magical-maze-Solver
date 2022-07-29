@@ -119,7 +119,7 @@ def get_font(size): # Returns in the desired size
 def theMainMaze():
 
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Which algorithm will be best?")
+    pygame.display.set_caption("WHICH ALGORITHM WILL BE BEST?")
     clock = pygame.time.Clock()
     mazeBackGround = pygame.image.load("assets/Options.png")
     screen.blit(mazeBackGround, (0, 0))
