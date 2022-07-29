@@ -15,43 +15,47 @@ import pygame_menu
 import heapq
 import array as arr
 from typing import Tuple, Any
-#from button import Button
 import sys
-from pygame.locals import *
+#from pygame.locals import *
+
 
 class Button():
-	def __init__(self, image, pos, text_input, font, base_color, hovering_color):
-		self.image = image
-		self.x_pos = pos[0]
-		self.y_pos = pos[1]
-		self.font = font
-		self.base_color, self.hovering_color = base_color, hovering_color
-		self.text_input = text_input
-		self.text = self.font.render(self.text_input, True, self.base_color)
-		if self.image is None:
-			self.image = self.text
-		self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
-		self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
+    def __init__(self, image, pos, text_input, font, base_color, hovering_color):
+        self.image = image
+        self.x_pos = pos[0]
+        self.y_pos = pos[1]
+        self.font = font
+        self.base_color, self.hovering_color = base_color, hovering_color
+        self.text_input = text_input
+        self.text = self.font.render(self.text_input, True, self.base_color)
+        if self.image is None:
+            self.image = self.text
+        self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
+        self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
 
-	def update(self, screen):
-		if self.image is not None:
-			screen.blit(self.image, self.rect)
-		screen.blit(self.text, self.text_rect)
+    def update(self, screen):
+        if self.image is not None:
+            screen.blit(self.image, self.rect)
+        screen.blit(self.text, self.text_rect)
 
-	def checkForInput(self, position):
-		if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
-			return True
-		return False
+    def checkForInput(self, position):
+        if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top,
+                                                                                          self.rect.bottom):
+            return True
+        return False
 
-	def changeColor(self, position):
-		if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
-			self.text = self.font.render(self.text_input, True, self.hovering_color)
-		else:
-			self.text = self.font.render(self.text_input, True, self.base_color)
+    def changeColor(self, position):
+        if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top,
+                                                                                          self.rect.bottom):
+            self.text = self.font.render(self.text_input, True, self.hovering_color)
+        else:
+            self.text = self.font.render(self.text_input, True, self.base_color)
+
 
 # create a new graph using networkx package
 global mazeGraph
 mazeGraph = nx.Graph()
+
 
 # set up pygame window
 WIDTH = 1400
@@ -63,7 +67,8 @@ GRAPH_SCALE_FACTOR = 1
 CREATE_SPEED = .001
 SOLVE_SPEED = .1
 
-# declare variables including globals
+
+# declare variables
 global execution_time_dijkstra
 execution_time_dijkstra = 0
 global execution_time_DFS
@@ -89,6 +94,7 @@ global BFS_visited_nodes
 global sumPath
 global winning_algo
 
+
 # Define colors
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0,)
@@ -98,10 +104,12 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GRAY = (107, 107, 107)
 
+
 # initialise Pygame
 pygame.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
 
 # setup maze parameters
 visited_cells = []
@@ -109,15 +117,13 @@ creation_stack = []
 global_node_count = 49  # user input this value
 rows = 0
 
-def get_font(size): # Returns in the desired size
-        return pygame.font.Font("assets/font.ttf", size)
 
+def get_font(size):  # Returns in the desired size
+    return pygame.font.Font("assets/font.ttf", size)
 
 
 # initialize pygame menu
-
 def theMainMaze():
-
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("WHICH ALGORITHM WILL BE BEST?")
     clock = pygame.time.Clock()
@@ -125,12 +131,12 @@ def theMainMaze():
     screen.blit(mazeBackGround, (0, 0))
     pygame.font.init()
     font = pygame.font.SysFont('Comic Sans MS', 30)
+
     # based on user selected maze size, determines number of rows in the maze
     def define_rows():
         global rows
         rows = math.sqrt(global_node_count)  # the global node count needs to be perfect square to make cubic maze
         rows = int(rows)  # wants to give float value - need int - casting to same
-
 
     # method to construct maze grid of squares
     def build_maze(node_count):
@@ -141,7 +147,7 @@ def theMainMaze():
 
         # draw background color of maze
         pygame.draw.rect(screen, BLUE, pygame.Rect(GRAPH_X_OFFSET + 20, GRAPH_Y_OFFSET + 20,
-                                                GRAPH_SCALE_FACTOR*20*rows, GRAPH_SCALE_FACTOR*20*rows))
+                                                   GRAPH_SCALE_FACTOR * 20 * rows, GRAPH_SCALE_FACTOR * 20 * rows))
 
         # draw all individual cells (Rects), walls will overlap but will be drawn over during maze creation
         for j in range(0, rows):
@@ -152,7 +158,6 @@ def theMainMaze():
 
         # refresh display with above
         pygame.display.update()
-
 
     # The following methods are used to 'clear' the maze visually as it is constructed and edges
     # are added between nodes per the algorithm we are using.  The walls are not actually being deleted but
@@ -166,11 +171,10 @@ def theMainMaze():
         else:
             x_pos = int(node_number % rows)
             y_pos = int(node_number / rows)
-        pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos*20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
-                                                y_pos*20*GRAPH_SCALE_FACTOR + 1 + GRAPH_Y_OFFSET,
-                                                18*GRAPH_SCALE_FACTOR, 38*GRAPH_SCALE_FACTOR))
+        pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos * 20 * GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
+                                                   y_pos * 20 * GRAPH_SCALE_FACTOR + 1 + GRAPH_Y_OFFSET,
+                                                   18 * GRAPH_SCALE_FACTOR, 38 * GRAPH_SCALE_FACTOR))
         pygame.display.update()
-
 
     # clear wall rightward
     def move_right(node_number):
@@ -180,11 +184,10 @@ def theMainMaze():
         else:
             x_pos = int(node_number % rows)
             y_pos = int(node_number / rows)
-        pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos*20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
-                                                y_pos*20*GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
-                                                38*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
+        pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos * 20 * GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
+                                                   y_pos * 20 * GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
+                                                   38 * GRAPH_SCALE_FACTOR, 18 * GRAPH_SCALE_FACTOR))
         pygame.display.update()
-
 
     # clear wall leftward
     def move_left(node_number):
@@ -194,11 +197,10 @@ def theMainMaze():
         else:
             x_pos = int(node_number % rows)
             y_pos = int(node_number / rows)
-        pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos*20*GRAPH_SCALE_FACTOR - 19 + GRAPH_X_OFFSET,
-                                                y_pos*20*GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET*GRAPH_SCALE_FACTOR,
-                                                38*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
+        pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos * 20 * GRAPH_SCALE_FACTOR - 19 + GRAPH_X_OFFSET,
+                                                   y_pos * 20 * GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET * GRAPH_SCALE_FACTOR,
+                                                   38 * GRAPH_SCALE_FACTOR, 18 * GRAPH_SCALE_FACTOR))
         pygame.display.update()
-
 
     # clear wall downward
     def move_down(node_number):
@@ -208,11 +210,10 @@ def theMainMaze():
         else:
             x_pos = int(node_number % rows)
             y_pos = int(node_number / rows)
-        pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
-                                                y_pos * 20 * GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
-                                                18*GRAPH_SCALE_FACTOR, 38*GRAPH_SCALE_FACTOR))
+        pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos * 20 * GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
+                                                   y_pos * 20 * GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
+                                                   18 * GRAPH_SCALE_FACTOR, 38 * GRAPH_SCALE_FACTOR))
         pygame.display.update()
-
 
     # color individual cell (for showing maze construction/tracking)
     def color_one_cell(node_number):
@@ -223,10 +224,9 @@ def theMainMaze():
             x_pos = int(node_number % rows)
             y_pos = int(node_number / rows)
         pygame.draw.rect(screen, YELLOW, pygame.Rect(x_pos * 20 * GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
-                                                    y_pos * 20 * GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
-                                                    18*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
+                                                     y_pos * 20 * GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
+                                                     18 * GRAPH_SCALE_FACTOR, 18 * GRAPH_SCALE_FACTOR))
         pygame.display.update()
-
 
     # will color beginning cell of maze GREEN
     def color_beginning(node_number):
@@ -236,11 +236,10 @@ def theMainMaze():
         else:
             x_pos = int(node_number % rows)
             y_pos = int(node_number / rows)
-        pygame.draw.rect(screen, GREEN, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
-                                                    y_pos * 20 *GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
-                                                    18*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
+        pygame.draw.rect(screen, GREEN, pygame.Rect(x_pos * 20 * GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
+                                                    y_pos * 20 * GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
+                                                    18 * GRAPH_SCALE_FACTOR, 18 * GRAPH_SCALE_FACTOR))
         pygame.display.update()
-
 
     # will color end cell of maze RED
     def color_end(node_number):
@@ -250,11 +249,10 @@ def theMainMaze():
         else:
             x_pos = int(node_number % rows)
             y_pos = int(node_number / rows)
-        pygame.draw.rect(screen, RED, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
-                                                y_pos * 20*GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
-                                                18*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
+        pygame.draw.rect(screen, RED, pygame.Rect(x_pos * 20 * GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
+                                                  y_pos * 20 * GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
+                                                  18 * GRAPH_SCALE_FACTOR, 18 * GRAPH_SCALE_FACTOR))
         pygame.display.update()
-
 
     # return highlighted cell to original color
     # this is used when showing that the maze generating algorithms is 'backtracking'
@@ -266,11 +264,10 @@ def theMainMaze():
         else:
             x_pos = int(node_number % rows)
             y_pos = int(node_number / rows)
-        pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
-                                                y_pos * 20*GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
-                                                18*GRAPH_SCALE_FACTOR, 18*GRAPH_SCALE_FACTOR))
+        pygame.draw.rect(screen, BLUE, pygame.Rect(x_pos * 20 * GRAPH_SCALE_FACTOR + 1 + GRAPH_X_OFFSET,
+                                                   y_pos * 20 * GRAPH_SCALE_FACTOR + 21 + GRAPH_Y_OFFSET,
+                                                   18 * GRAPH_SCALE_FACTOR, 18 * GRAPH_SCALE_FACTOR))
         pygame.display.update()
-
 
     # solution cell that shows small box in center to mark path/solution
     def show_solution_cell(node_number):
@@ -280,11 +277,10 @@ def theMainMaze():
         else:
             x_pos = int(node_number % rows)
             y_pos = int(node_number / rows)
-        pygame.draw.rect(screen, WHITE, pygame.Rect(x_pos * 20*GRAPH_SCALE_FACTOR + 8 + GRAPH_X_OFFSET,
-                                                    y_pos * 20*GRAPH_SCALE_FACTOR + 28 + GRAPH_Y_OFFSET,
-                                                    3*GRAPH_SCALE_FACTOR, 3*GRAPH_SCALE_FACTOR))
+        pygame.draw.rect(screen, WHITE, pygame.Rect(x_pos * 20 * GRAPH_SCALE_FACTOR + 8 + GRAPH_X_OFFSET,
+                                                    y_pos * 20 * GRAPH_SCALE_FACTOR + 28 + GRAPH_Y_OFFSET,
+                                                    3 * GRAPH_SCALE_FACTOR, 3 * GRAPH_SCALE_FACTOR))
         pygame.display.update()
-
 
     # method to show the solution to the maze visually
     def display_maze_solution(maze_solution):
@@ -292,7 +288,6 @@ def theMainMaze():
             show_solution_cell(i)
             pygame.mixer.Sound.play(solve_click)
             time.sleep(SOLVE_SPEED)
-
 
     # this is the back-racker algorithm we discussed to generate the maze randomly
     # basically, it takes a node and determines how many UNVISITED neighbors in the maze it has that can be
@@ -368,7 +363,6 @@ def theMainMaze():
         color_beginning(1)
         color_end(global_node_count)
 
-
     #  creates mazes that are not shown on the screen (this method was used to construct .gml files that are loaded on
     #  demand to save time for the user as maze creation at 100k nodes take several minutes).
     #  this method is not used for real time running of the program
@@ -416,7 +410,6 @@ def theMainMaze():
             else:
                 current_cell = creation_stack.pop()
 
-
     # using custom programmed Dijkstra's, DFS, and BFS algorithms to solve maze
     # report time to execute for each
     # display solution visually ons creen and as a vector in console
@@ -436,17 +429,17 @@ def theMainMaze():
         start_time = time.time_ns()
         maze_solution_dijkstra = abbreviatedDijkstra()
         end_time = time.time_ns()
-        execution_time_dijkstra = (end_time - start_time)/1000000
+        execution_time_dijkstra = (end_time - start_time) / 1000000
 
         start_time = time.time_ns()
         maze_solution_DFS = depth_first_search()
         end_time = time.time_ns()
-        execution_time_DFS = (end_time - start_time)/1000000
+        execution_time_DFS = (end_time - start_time) / 1000000
 
         start_time = time.time_ns()
         maze_solution_BFS = breadth_first_search()
         end_time = time.time_ns()
-        execution_time_BFS = (end_time - start_time)/1000000
+        execution_time_BFS = (end_time - start_time) / 1000000
 
         shortest_time = execution_time_dijkstra
         winning_algo = 'Dijkstra'
@@ -465,7 +458,6 @@ def theMainMaze():
         print(maze_solution_DFS)
         print(maze_solution_BFS)
         display_maze_solution(maze_solution_BFS)
-
 
     # solves the maze using Dijkstra's, BFS, DFS, but outputs no visuals as maze of 100k cannot fit on screen
     # shows solve times for each on screen
@@ -486,18 +478,18 @@ def theMainMaze():
         maze_solution_dijkstra = abbreviatedDijkstra()
         maze_solution_dijkstra
         end_time = time.time_ns()
-        execution_time_dijkstra = (end_time - start_time)/1000000
+        execution_time_dijkstra = (end_time - start_time) / 1000000
         print('Dijkstras algorithm took:', execution_time_dijkstra, 'ns to execute')
 
         start_time = time.time_ns()
         maze_solution_DFS = depth_first_search()
         end_time = time.time_ns()
-        execution_time_DFS = (end_time - start_time)/1000000
+        execution_time_DFS = (end_time - start_time) / 1000000
 
         start_time = time.time_ns()
         maze_solution_BFS = breadth_first_search()
         end_time = time.time_ns()
-        execution_time_BFS = (end_time - start_time)/1000000
+        execution_time_BFS = (end_time - start_time) / 1000000
 
         shortest_time = execution_time_dijkstra
         winning_algo = 'Dijkstra'
@@ -515,7 +507,6 @@ def theMainMaze():
         print(maze_solution_dijkstra)
         print(maze_solution_DFS)
         print(maze_solution_BFS)
-
 
     #  custom depth first search algorithm
     def depth_first_search() -> []:
@@ -553,7 +544,6 @@ def theMainMaze():
                 nodes_stack.append(current_node)
 
         return maze_solution
-
 
     #  custom breadth first search algorithm
     def breadth_first_search() -> []:
@@ -595,21 +585,20 @@ def theMainMaze():
                                     return maze_solution
         return maze_solution
 
-
     # custom written Dijkstra's algorithm for shortest path, Group 1 COP3530
     # uses some lines of code from Stepik Module 8.2 Dijkstra's Shortest Paths From Source Vertex to all Vertices
     def abbreviatedDijkstra() -> []:
         # Dijkstra variables
         global sumPath
-        priorityQueue = [] # heap based on distance array variable
-        sumPath = 1 # count includes starting node 1, count all node visits
-        shortestPath = arr.array('i') # unique node shortest path
-        visitedNodes = set() # set of visited nodes with unique nodes to prevent retracing steps
-        distance = arr.array('i', [0,0]) # map that stores all the distances from the source node
-        heapq.heappush(priorityQueue, (0, 1)) # add starting node: always start at node 1 and distance 0
-        visitedNodes.add(1) # add starting node: always start at node 1
-        ancestor = set() # store node and ancestor
-        origin = 1 # origin set to 1
+        priorityQueue = []  # heap based on distance array variable
+        sumPath = 1  # count includes starting node 1, count all node visits
+        shortestPath = arr.array('i')  # unique node shortest path
+        visitedNodes = set()  # set of visited nodes with unique nodes to prevent retracing steps
+        distance = arr.array('i', [0, 0])  # map that stores all the distances from the source node
+        heapq.heappush(priorityQueue, (0, 1))  # add starting node: always start at node 1 and distance 0
+        visitedNodes.add(1)  # add starting node: always start at node 1
+        ancestor = set()  # store node and ancestor
+        origin = 1  # origin set to 1
 
         i = 2
         while i != (global_node_count + 1):
@@ -617,22 +606,22 @@ def theMainMaze():
             i += 1
 
         while origin != global_node_count:
-            for nbr in mazeGraph.adj[origin].items(): # step through neighbors of origin
-                if nbr[0] not in visitedNodes: # except for nodes already visited
-                    u = origin # get current node
-                    v = nbr[0] # neighbor
-                    w = 1 # u->v the weight of the edge
+            for nbr in mazeGraph.adj[origin].items():  # step through neighbors of origin
+                if nbr[0] not in visitedNodes:  # except for nodes already visited
+                    u = origin  # get current node
+                    v = nbr[0]  # neighbor
+                    w = 1  # u->v the weight of the edge
                     if distance[v] > (distance[u] + w):
                         distance[v] = distance[u] + w
                         heapq.heappush(priorityQueue, (distance[v], v))
-                        sumPath += 1 # increment sumPath
+                        sumPath += 1  # increment sumPath
                         visitedNodes.add(v)
                         ancestor.add((v, origin))
-            origin = priorityQueue[0][1] # move origin to next item in heap
-            heapq.heappop(priorityQueue) # pop item off heap
+            origin = priorityQueue[0][1]  # move origin to next item in heap
+            heapq.heappop(priorityQueue)  # pop item off heap
 
         # creating shortest path vector (will be reverse order)
-        origin = global_node_count # start
+        origin = global_node_count  # start
         while origin != 1:
             # Find an element in list of tuples.
             for item in ancestor:
@@ -648,15 +637,14 @@ def theMainMaze():
 
         return ascending_order_path
 
-
     # set the mood with some MUSIC! also loads sound effects
     solve_click = pygame.mixer.Sound("assets/click.wav")
     end_maze_sound = pygame.mixer.Sound("assets/Success.mp3")
-    pygame.mixer.music.load('assets/maze-music.wav')
+    pygame.mixer.music.load('assets/Intro-Music.mp3')
     pygame.mixer.music.set_volume(0.5)
     pygame.mixer.music.play(-1)
-    #UNCOMMENT LATER.
 
+    # UNCOMMENT LATER.
 
     # will execute all 3 algorithms on currently selected maze size (Dijkstra, BFS, DFS)
     # results output visually for smaller mazes, times only for 100k size
@@ -686,9 +674,10 @@ def theMainMaze():
             solved = True
         else:
 
-            #here we will code the loading for bigger mazes.
+            # here we will code the loading for bigger mazes.
 
-            loading_text = font.render("Solving GIGANTIC Maze Number " + str(high_nodes_menu_choice), True, (255, 255, 255))
+            loading_text = font.render("Solving GIGANTIC Maze Number " + str(high_nodes_menu_choice), True,
+                                       (255, 255, 255))
             loading_text2 = font.render("This might take a second. Please bear with us...", True, (255, 255, 255))
             loading_text3 = font.render("The program is not frozen, do not worry.", True, (255, 255, 255))
             screen.blit(loading_text, (200, 350))
@@ -708,7 +697,6 @@ def theMainMaze():
             screen.blit(loading_text, (395, 450))
 
             solved = True
-
 
     # method to set node count of maze based on user input via menu
     def set_node_count(selected: Tuple, value: Any) -> None:
@@ -750,25 +738,20 @@ def theMainMaze():
             slider2.readonly = True
             slider2.is_selectable = False
 
-
     # will set creation maze delay for faster/slower creation depending on user preference, set via slider on menu
     def set_creation_speed(x):
         global CREATE_SPEED
         CREATE_SPEED = x
-
 
     # sets maze solution visualization speed faster/slower based on user input from slider
     def set_solve_speed(x):
         global SOLVE_SPEED
         SOLVE_SPEED = x
 
-
     # sets user choice of 100k size maze (select from 3 possibilities), sets variable high nodes menu choice equal to same
     def menu_choice(x, y):
         global high_nodes_menu_choice
         high_nodes_menu_choice = y
-
-
 
     menu = pygame_menu.Menu(
         height=400,
@@ -776,29 +759,28 @@ def theMainMaze():
         mouse_motion_selection=True,
         position=(900, 0, False),
         theme=pygame_menu.themes.THEME_DARK,
-        title='CONTROLS',
+        title='OPTIONS',
     )
 
-
-
     # construct pygame menu
-
-    menu.add.selector('Maze Node Count: ', [('49', 1), ('900', 2), ('1,600', 3), ('100,000', 4)], onchange=set_node_count)
-    btn = menu.add.selector('Large Maze Choices: ', [('Graph 1', 1), ('Graph 2', 2), ('Graph 3', 3)], onchange=menu_choice)
+    font_size_menu = 25
+    menu.add.selector('Maze Node Count: ', [('49', 1), ('900', 2), ('1,600', 3), ('100,000', 4)],
+                      onchange=set_node_count, font_size=font_size_menu)
+    btn = menu.add.selector('Large Maze Choices: ', [('Graph 1', 1), ('Graph 2', 2), ('Graph 3', 3)],
+                            onchange=menu_choice, font_size=font_size_menu)
     btn.readonly = True
     btn.is_selectable = False
-    menu.add.label("----Speed Adjustment (Visuals)----", label_id="label_widget", )
+    menu.add.label("----Speed Adjustment (Visuals)----", label_id="label_widget", font_size=font_size_menu)
     slider = menu.add.range_slider("Maze Creation Delay:", rangeslider_id="creation_speed_slider", default=.001,
-                                range_values=(0, 0.1), increment=10, onchange=set_creation_speed)
+                                   range_values=(0, 0.1), increment=10, onchange=set_creation_speed, font_size=font_size_menu)
     slider.readonly = False
     slider.is_selectable = True
     slider2 = menu.add.range_slider("Maze Solution Delay:", rangeslider_id="solve_speed_slider",
-                                    default=.1, range_values=(0, 0.1), increment=10, onchange=set_solve_speed)
+                                    default=.1, range_values=(0, 0.1), increment=10, onchange=set_solve_speed, font_size=font_size_menu)
     slider2.readonly = False
     slider2.is_selectable = True
-    menu.add.button('Start Maze', run_the_maze)
-    menu.add.button('Back to Main Menu', main_menu)
-
+    menu.add.button('Start Maze', run_the_maze, font_size=font_size_menu)
+    menu.add.button('Back to Main Menu', main_menu, font_size=font_size_menu)
 
     # pygame loop
     game_on = True
@@ -814,17 +796,14 @@ def theMainMaze():
         if menu.is_enabled():
             menu.update(events)
             menu.draw(screen)
-            
 
         pygame.draw.rect(screen, GRAY, pygame.Rect(900, 400, 500, 500))
-        
-
 
         if solved:
-
             dijkstra_text = font.render('Dijkstra: ', True, (0, 0, 0))
             dijkstra_nodes = font.render("Nodes Visited: " + str(sumPath), True, (0, 0, 0))
-            dijkstra_solution_nodes = font.render("Nodes in Solution: " + str(len(maze_solution_dijkstra)), True, (0, 0, 0))
+            dijkstra_solution_nodes = font.render("Nodes in Solution: " + str(len(maze_solution_dijkstra)), True,
+                                                  (0, 0, 0))
             dijkstra_solve = font.render("Time to solve (ms): " + str(execution_time_dijkstra), True, (0, 0, 0))
 
             DFS_text = font.render('Depth First Search: ', True, (0, 0, 0))
@@ -874,11 +853,9 @@ def options():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     Background_options = pygame.image.load("assets/UF.png")
     while True:
-        screen.fill((230,230,250))
+        screen.fill((230, 230, 250))
         screen.blit(Background_options, (0, 0))
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
-       
-        
 
         OPTIONS_TEXT = get_font(45).render("Created by:", True, "WHITE")
         OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(650, 100))
@@ -888,7 +865,7 @@ def options():
 
         Aaron_TEXT = get_font(45).render("Aaron Hamburger", True, "WHITE")
         Aaron_RECT = OPTIONS_TEXT.get_rect(center=(650, 300))
-        
+
         Serg_TEXT = get_font(45).render("Sergio Arcila", True, "WHITE")
         Serg_RECT = OPTIONS_TEXT.get_rect(center=(650, 380))
 
@@ -902,8 +879,8 @@ def options():
         screen.blit(Zak_TEXT, Zak_RECT)
         screen.blit(UF_TEXT, UF_RECT)
 
-        OPTIONS_BACK = Button(image=None, pos=(700, 800), 
-                            text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
+        OPTIONS_BACK = Button(image=None, pos=(700, 800),
+                              text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
 
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_BACK.update(screen)
@@ -918,6 +895,7 @@ def options():
 
         pygame.display.update()
 
+
 def drawOutline(x, y, string, col, size, window):
     font = pygame.font.Font("assets/font.ttf", size)
     text = font.render(string, True, col)
@@ -925,11 +903,12 @@ def drawOutline(x, y, string, col, size, window):
     textbox.center = (x, y)
     window.blit(text, textbox)
 
+
 def main_menu():
-    pygame.mixer.music.load('assets/Intro-Music.mp3')
+    pygame.mixer.music.load('assets/maze-music.wav')
     pygame.mixer.music.set_volume(0.8)
     pygame.mixer.music.play(-1)
-    screen = pygame.display.set_mode((1920, 1024))
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Mighty Maze Magicians Present: The Magical Maze Solver!")
 
     Background = pygame.image.load("assets/Maze.jpg")
@@ -939,29 +918,27 @@ def main_menu():
 
         Mouse = pygame.mouse.get_pos()
 
-        MENU_TEXT = get_font(80).render("THE MAGICAL MAZE SOLVER", True, "#b68f40")
-        WELCOME_TEXT = get_font(80).render("WELCOME TO", True, "#b68f40")
-        MENU_RECT = MENU_TEXT.get_rect(center=(960, 220))
-        WELCOME_RECT = WELCOME_TEXT.get_rect(center=(960, 100))
-        x = 960
+        MENU_TEXT = get_font(60).render("THE MAGICAL MAZE SOLVER", True, "#b68f40")
+        WELCOME_TEXT = get_font(60).render("WELCOME TO", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(center=(700, 220))
+        WELCOME_RECT = WELCOME_TEXT.get_rect(center=(700, 100))
+        x = 700
         y = 220
-        drawOutline(x + 3, y-2 , "THE MAGICAL MAZE SOLVER", BLACK, 80, screen)
+        drawOutline(x + 3, y - 2, "THE MAGICAL MAZE SOLVER", BLACK, 60, screen)
         # top right
-        drawOutline(x +5, y-4 , "THE MAGICAL MAZE SOLVER", BLACK, 80, screen)
+        drawOutline(x + 5, y - 4, "THE MAGICAL MAZE SOLVER", BLACK, 60, screen)
 
-        y2= 100
-        drawOutline(x + 3, y2-2 , "WELCOME TO", BLACK, 80, screen)
+        y2 = 100
+        drawOutline(x + 3, y2 - 2, "WELCOME TO", BLACK, 60, screen)
         # top right
-        drawOutline(x +5, y2-4 , "WELCOME TO", BLACK, 80, screen)
+        drawOutline(x + 5, y2 - 4, "WELCOME TO", BLACK, 60, screen)
 
-
-
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(960, 550), 
-                            text_input="CONTINUE", font=get_font(60), base_color="#86f67d", hovering_color="White")
-        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/quit Rect.png"), pos=(350, 900), 
-                            text_input="CREDITS", font=get_font(49), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(1650, 900), 
-                            text_input="QUIT", font=get_font(55), base_color="#e8351a", hovering_color="White")
+        PLAY_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(700, 500),
+                             text_input="PLAY", font=get_font(60), base_color="#86f67d", hovering_color="White")
+        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/quit Rect.png"), pos=(200, 700),
+                                text_input="CREDITS", font=get_font(49), base_color="#d7fcd4", hovering_color="White")
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(1200, 700),
+                             text_input="QUIT", font=get_font(55), base_color="#e8351a", hovering_color="White")
 
         screen.blit(MENU_TEXT, MENU_RECT)
         screen.blit(WELCOME_TEXT, WELCOME_RECT)
@@ -969,7 +946,7 @@ def main_menu():
         for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
             button.changeColor(Mouse)
             button.update(screen)
-        
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -986,14 +963,11 @@ def main_menu():
         pygame.display.update()
 
 
-
 main_menu()
-
-
-
-
-
 theMainMaze()
+
+
 # Attributions:
-# Free sounds from zapsplat.com
+# Free sounds/music from zapsplat.com
+# Royalty free images from pixabay.com
 # 8.2 Dijkstra's Shortest Paths From Source Vertex to all Vertices
