@@ -16,7 +16,6 @@ import heapq
 import array as arr
 from typing import Tuple, Any
 import sys
-#from pygame.locals import *
 
 
 class Button():
