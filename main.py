@@ -679,10 +679,10 @@ def theMainMaze():
             loading_text = font.render("Solving GIGANTIC Maze Number " + str(high_nodes_menu_choice), True,
                                        (255, 255, 255))
             loading_text2 = font.render("This might take a second. Please bear with us...", True, (255, 255, 255))
-            loading_text3 = font.render("The program is not frozen, do not worry.", True, (255, 255, 255))
+            loading_text3 = font.render("Dijkstra's algorithm is turning your CPU into a space heater", True, (255, 255,255))
             screen.blit(loading_text, (200, 350))
             screen.blit(loading_text2, (150, 400))
-            screen.blit(loading_text3, (180, 450))
+            screen.blit(loading_text3, (35, 450))
             pygame.display.update()
             if high_nodes_menu_choice == 1:
                 mazeGraph = nx.read_gml("assets/graph100k_ONE.gml", destringizer=int)
