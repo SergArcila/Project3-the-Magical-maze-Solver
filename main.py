@@ -442,6 +442,8 @@ def theMainMaze():
 
         shortest_time = execution_time_dijkstra
         winning_algo = 'Dijkstra'
+
+        #add conditions for a* algoithm
         if execution_time_dijkstra == execution_time_BFS:
             if execution_time_dijkstra == execution_time_DFS:
                 winning_algo = 'It is a tie!'
@@ -546,36 +548,40 @@ def theMainMaze():
 
     #  custom breadth first search algorithm
     def breadth_first_search() -> []:
-        previous_node_dictionary = {}
-        node_queue = [1]
+
+        global BFS_visited_nodes
+        visited_node_dictionary = {}
+        queueOfNodes = [1]
         maze_solution_temp = []
         maze_solution = []
         visited_nodes_set = set()
         visited_nodes_set.add(1)
-        global BFS_visited_nodes
+        
         BFS_visited_nodes = 1
         current_node = 1
 
-        while node_queue:
+        while queueOfNodes:
 
-            if len(node_queue) == 0:
+            if len(queueOfNodes) == 0:
                 break
-            x = len(node_queue)
+                #there are no nodes so we break the while loop.
+
+            x = len(queueOfNodes)
 
             for i in range(0, x):
-                current_node = node_queue.pop()
-                for nbr in mazeGraph.adj[current_node].items():
-                    if nbr[0] not in visited_nodes_set:
-                        node_queue.append(nbr[0])
-                        visited_nodes_set.add(nbr[0])
+                current_node = queueOfNodes.pop()
+                for j in mazeGraph.adj[current_node].items():
+                    if j[0] not in visited_nodes_set:
+                        queueOfNodes.append(j[0])
+                        visited_nodes_set.add(j[0])
                         BFS_visited_nodes += 1
-                        previous_node_dictionary[nbr[0]] = current_node
-                        if nbr[0] == global_node_count:
+                        visited_node_dictionary[j[0]] = current_node
+                        if j[0] == global_node_count:
                             #  maze is solved
-                            current_node = nbr[0]
+                            current_node = j[0]
                             while True:
                                 maze_solution_temp.append(current_node)
-                                current_node = previous_node_dictionary.get(current_node)
+                                current_node = visited_node_dictionary.get(current_node)
                                 if current_node == 1:
                                     maze_solution_temp.append(1)
                                     x = len(maze_solution_temp)
@@ -586,6 +592,7 @@ def theMainMaze():
 
     # custom written Dijkstra's algorithm for shortest path, Group 1 COP3530
     # uses some lines of code from Stepik Module 8.2 Dijkstra's Shortest Paths From Source Vertex to all Vertices
+
     def abbreviatedDijkstra() -> []:
         # Dijkstra variables
         global sumPath
@@ -642,8 +649,6 @@ def theMainMaze():
     pygame.mixer.music.load('assets/Intro-Music.mp3')
     pygame.mixer.music.set_volume(0.5)
     pygame.mixer.music.play(-1)
-
-    # UNCOMMENT LATER.
 
     # will execute all 3 algorithms on currently selected maze size (Dijkstra, BFS, DFS)
     # results output visually for smaller mazes, times only for 100k size
