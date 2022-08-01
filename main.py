@@ -1,3 +1,4 @@
+
 #  COP 3530 Summer 2022
 #  Project 3
 #  Group 1
@@ -756,9 +757,6 @@ clock = pygame.time.Clock()  # initialize clock for time keeping
 # set the mood with some MUSIC! also loads sound effects
 solve_click = pygame.mixer.Sound("assets/click.wav")  # sound effect for blocks solving maze
 end_maze_sound = pygame.mixer.Sound("assets/Success.mp3")  # sound effect for successful maze solution on screen
-pygame.mixer.music.load('assets/Intro-Music.mp3')  # title screen music
-pygame.mixer.music.set_volume(0.1)  # volume of music
-pygame.mixer.music.play(-1)
 
 
 def get_font(size):  # Returns font choice
@@ -890,6 +888,9 @@ def the_main_maze():
     pygame.display.set_caption("WHICH ALGORITHM WILL BE BEST?")
     maze_back_ground = pygame.image.load("assets/Options.png")
     the_screen.blit(maze_back_ground, (0, 0))
+    pygame.mixer.music.load('assets/Intro-Music.mp3')  # title screen music
+    pygame.mixer.music.set_volume(0.1)  # volume of music
+    pygame.mixer.music.play(-1)
 
     # pygame loop
     game_on = True
